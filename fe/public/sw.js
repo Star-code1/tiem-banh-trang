@@ -1,0 +1,5 @@
+const CACHE='goc-pho-v3.0.0';
+const CORE=['/','/icon.svg','/manifest.webmanifest','/assets/atlas.webp','/assets/street.webp',...['click','cut','sprinkle','pour','mix','grill','roll','arrival','hello','thanks','coin','wrong','upgrade','cat','dice','rain'].map(n=>'/assets/audio/'+n+'.wav')];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('goc-pho-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin||u.pathname.startsWith('/api/'))return;e.respondWith(fetch(e.request).then(async res=>{if(res.ok){const c=await caches.open(CACHE);await c.put(e.request,res.clone())}return res}).catch(async()=>{const cached=await caches.match(e.request);if(cached)return cached;if(e.request.mode==='navigate')return caches.match('/');return Response.error()}));});

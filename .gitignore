@@ -1,0 +1,12 @@
+server/data/
+.env
+node_modules/
+*.log
+.sites-runtime/
+fe/.env
+fe/.env.*
+!fe/.env.example
+be/.env
+be/.env.*
+!be/.env.example
+coverage/

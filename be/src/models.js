@@ -1,0 +1,6 @@
+import mongoose from 'mongoose';
+const {Schema}=mongoose;
+const userSchema=new Schema({username:{type:String,required:true,unique:true,lowercase:true,trim:true},salt:{type:String,required:true,select:false},passwordHash:{type:String,required:true,select:false},code:{type:String,required:true,unique:true},referredBy:{type:Schema.Types.ObjectId,ref:'User',default:null},pendingAmount:{type:Number,default:0,min:0},saveData:{type:Schema.Types.Mixed,default:null},revision:{type:Number,default:0,min:0},legacyId:{type:String,unique:true,sparse:true}},{timestamps:true});
+const sessionSchema=new Schema({hash:{type:String,required:true,unique:true},userId:{type:Schema.Types.ObjectId,required:true,ref:'User',index:true},expires:{type:Date,required:true}},{timestamps:true});sessionSchema.index({expires:1},{expireAfterSeconds:0});
+const mediaSchema=new Schema({key:{type:String,required:true,unique:true},publicId:{type:String,required:true},resourceType:{type:String,enum:['image','video'],required:true},secureUrl:{type:String,required:true},bytes:Number},{timestamps:true});
+export const User=mongoose.model('User',userSchema),Session=mongoose.model('Session',sessionSchema),MediaAsset=mongoose.model('MediaAsset',mediaSchema);
